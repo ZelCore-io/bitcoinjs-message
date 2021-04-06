@@ -178,7 +178,8 @@ function decodeBech32 (address) {
   return Buffer.from(data)
 }
 
-function verify (message, address, signature, messagePrefix, checkSegwitAlways) {
+function verify (message, address, signature, messagePrefix, checkSegwitAlways, pubKeyHash = '00') {
+  let sliceAmount = Math.floor(pubKeyHash.length / 2);
   if (!Buffer.isBuffer(signature)) signature = Buffer.from(signature, 'base64')
 
   const parsed = decodeSignature(signature)
@@ -200,7 +201,7 @@ function verify (message, address, signature, messagePrefix, checkSegwitAlways) 
   if (parsed.segwitType) {
     if (parsed.segwitType === SEGWIT_TYPES.P2SH_P2WPKH) {
       actual = segwitRedeemHash(publicKeyHash)
-      expected = bs58check.decode(address).slice(1)
+      expected = bs58check.decode(address).slice(sliceAmount)
     } else {
       // parsed.segwitType === SEGWIT_TYPES.P2WPKH
       // must be true since we only return null, P2SH_P2WPKH, or P2WPKH
@@ -216,7 +217,7 @@ function verify (message, address, signature, messagePrefix, checkSegwitAlways) 
         return bufferEquals(publicKeyHash, expected)
       } catch (e) {
         const redeemHash = segwitRedeemHash(publicKeyHash)
-        expected = bs58check.decode(address).slice(1)
+        expected = bs58check.decode(address).slice(sliceAmount)
         // base58 can be p2pkh or p2sh-p2wpkh
         return (
           bufferEquals(publicKeyHash, expected) ||
@@ -225,7 +226,7 @@ function verify (message, address, signature, messagePrefix, checkSegwitAlways) 
       }
     } else {
       actual = publicKeyHash
-      expected = bs58check.decode(address).slice(1)
+      expected = bs58check.decode(address).slice(sliceAmount)
     }
   }
 
