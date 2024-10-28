@@ -179,7 +179,7 @@ function decodeBech32 (address) {
 }
 
 function verify (message, address, signature, messagePrefix, checkSegwitAlways, pubKeyHash = '00') {
-  let sliceAmount = Math.floor(pubKeyHash.length / 2);
+  let sliceAmount = Math.floor(pubKeyHash.length / 2)
   if (!Buffer.isBuffer(signature)) signature = Buffer.from(signature, 'base64')
 
   const parsed = decodeSignature(signature)

@@ -1,5 +1,5 @@
 {
-  "name": "bitcoinjs-message",
+  "name": "@runonflux/bitcoinjs-message",
   "version": "2.2.0",
   "description": "bitcoinjs-message",
   "keywords": [
